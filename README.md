@@ -1,30 +1,37 @@
-# Фокус на левую вкладку
+# Focus Left Tab
 
-Расширение для Google Chrome. Когда вы закрываете активную вкладку, фокус переходит на вкладку **слева**, а не справа, как в Chrome по умолчанию.
+**English** | [Русский](README.ru.md)
 
-## Установка
+A Google Chrome extension. When you close the active tab, focus moves to the tab on the **left** instead of the tab on the right, which is what Chrome does by default.
 
-1. Откройте в Chrome адрес `chrome://extensions`.
-2. Справа вверху включите **Режим разработчика** (Developer mode).
-3. Нажмите **Загрузить распакованное расширение** (Load unpacked) и выберите папку с расширением, ту, где лежит `manifest.json`.
+## Installation
 
-Готово. Папку не удаляйте и не перемещайте: Chrome загружает расширение прямо из неё.
+1. Open `chrome://extensions` in Chrome.
+2. Turn on **Developer mode** in the top right corner.
+3. Click **Load unpacked** and select the extension folder, the one that contains `manifest.json`.
 
-## Как работает
+That's it. Don't delete or move the folder: Chrome loads the extension directly from it.
 
-- Закрыли активную вкладку → активируется ближайшая вкладка слева.
-- Закрыли самую левую вкладку → слева никого нет, Chrome, как обычно, переходит вправо.
-- Закрыли фоновую (неактивную) вкладку → фокус не меняется.
-- Вкладки в свёрнутых группах пропускаются, чтобы группа не разворачивалась сама.
-- Работает во всех окнах и после перезапуска браузера.
+## How it works
 
-## Ограничения
+- Close the active tab → the nearest tab on the left becomes active.
+- Close the leftmost tab → there's nothing on the left, so Chrome moves to the right as usual.
+- Close a background (inactive) tab → focus stays where it is.
+- Tabs in collapsed groups are skipped, so a group never expands on its own.
+- Works in every window and keeps working after a browser restart.
 
-- Chrome сначала сам переключается на правую вкладку, и только потом расширение переводит фокус влево. Иногда правая вкладка успевает мелькнуть на долю секунды. Встроенное поведение Chrome расширения отключить не могут.
-- Если вкладку открыли по ссылке и сразу закрыли, Chrome обычно возвращается к вкладке, из которой её открыли. Расширение всегда переходит влево.
+## Limitations
 
-## Файлы
+- Chrome switches to the tab on the right first, and only then does the extension move focus to the left. The right tab may flash for a split second. Extensions can't turn off Chrome's built-in behavior.
+- If you open a tab from a link and close it right away, Chrome usually returns to the tab you opened it from. The extension always goes left.
 
-- `manifest.json` — описание расширения (Manifest V3). Разрешения: `storage` и `tabGroups`. Доступа к адресам и содержимому страниц у расширения нет.
-- `background.js` — вся логика.
-- `icons/` — иконки. `icon.svg` — исходник для 48 и 128 px, `icon-16.svg` — упрощённый исходник для 16 и 32 px.
+## Language
+
+The extension's name and description follow Chrome's interface language: Russian if Chrome is in Russian, English for every other language. The strings live in `_locales/`.
+
+## Files
+
+- `manifest.json` — the extension manifest (Manifest V3). Permissions: `storage` and `tabGroups`. The extension can't see page addresses or page content.
+- `background.js` — all of the logic.
+- `_locales/` — the name and description in English (default) and Russian.
+- `icons/` — the icons. `icon.svg` is the source for 48 and 128 px, `icon-16.svg` is a simplified source for 16 and 32 px.

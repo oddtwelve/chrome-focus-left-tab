@@ -1,0 +1,10 @@
+{
+  "extName": {
+    "message": "Focus Left Tab",
+    "description": "Extension name. Also shown as the toolbar button tooltip."
+  },
+  "extDescription": {
+    "message": "When you close the active tab, focus moves to the tab on the left instead of the right.",
+    "description": "Extension description. Chrome Web Store limit: 132 characters."
+  }
+}

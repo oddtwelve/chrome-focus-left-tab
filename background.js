@@ -1,22 +1,23 @@
 'use strict';
 
-// Когда закрывается активная вкладка, Chrome сам переключается на вкладку справа.
-// Расширение сразу после этого переводит фокус на ближайшую вкладку слева.
+// When the active tab is closed, Chrome itself switches to the tab on the right.
+// Right after that, the extension moves focus to the nearest tab on the left.
 //
-// Порядок вкладок приходится запоминать заранее: в момент события onRemoved
-// закрытой вкладки уже нет, и узнать, где она стояла, нельзя. Сервис-воркер
-// засыпает примерно через 30 секунд простоя и теряет переменные, поэтому
-// состояние хранится в chrome.storage.session (живёт до перезапуска браузера).
+// The tab order has to be remembered in advance: by the time onRemoved fires,
+// the closed tab is gone and there is no way to find out where it was. The
+// service worker is shut down after about 30 seconds of inactivity and loses
+// its variables, so the state is kept in chrome.storage.session (which lives
+// until the browser restarts).
 
-// Chrome может прислать onActivated для новой вкладки раньше, чем onRemoved для
-// закрытой. Тогда закрытая вкладка числится «предыдущей активной», и переключение
-// считается вызванным закрытием, только если оно случилось совсем недавно.
+// Chrome may fire onActivated for the new tab before onRemoved for the closed
+// one. The closed tab is then recorded as the "previously active" tab, and the
+// switch is attributed to the close only if it happened very recently.
 const CLOSE_ACTIVATION_WINDOW_MS = 500;
 
 const stateKey = (windowId) => `win:${windowId}`;
 
-// Обработчики выполняются строго по очереди, иначе параллельные
-// чтения и записи состояния перетирали бы друг друга.
+// Handlers run strictly one after another; otherwise concurrent reads
+// and writes of the state would overwrite each other.
 let queue = Promise.resolve();
 function enqueue(task) {
   queue = queue.then(task).catch((err) => console.error('[focus-left]', err));
@@ -35,7 +36,7 @@ function dropState(windowId) {
   return chrome.storage.session.remove(stateKey(windowId));
 }
 
-// Запоминает текущий порядок вкладок окна.
+// Remembers the current tab order of a window.
 async function snapshotWindow(windowId) {
   let tabs;
   try {
@@ -78,16 +79,16 @@ async function activate(tabId) {
       await chrome.tabs.update(tabId, { active: true });
       return;
     } catch (err) {
-      // «Tabs cannot be edited right now (user may be dragging a tab)» — пробуем ещё раз.
+      // "Tabs cannot be edited right now (user may be dragging a tab)": try again.
       if (attempt >= 10 || !String(err?.message).includes('cannot be edited')) throw err;
       await new Promise((resolve) => setTimeout(resolve, 50));
     }
   }
 }
 
-// Активирует ближайшую вкладку слева от позиции закрытой вкладки.
-// Пропускает вкладки, которые уже закрыты, перенесены в другое окно
-// или спрятаны в свёрнутой группе.
+// Activates the nearest tab to the left of where the closed tab was.
+// Skips tabs that are already closed, were moved to another window,
+// or are hidden in a collapsed group.
 async function focusLeftNeighbor(windowId, order, closedPos) {
   for (let i = closedPos - 1; i >= 0; i--) {
     let tab;
@@ -122,7 +123,7 @@ chrome.tabs.onRemoved.addListener((tabId, { windowId, isWindowClosing }) => {
       prevActive: state.prevActive === tabId ? null : state.prevActive,
     });
 
-    // Самая левая вкладка: слева никого нет, оставляем поведение Chrome.
+    // Leftmost tab: there is nothing on the left, so keep Chrome's behavior.
     if (wasActive && pos > 0) await focusLeftNeighbor(windowId, state.order, pos);
   });
 });
@@ -150,7 +151,7 @@ chrome.tabs.onReplaced.addListener((addedTabId) =>
     try {
       await snapshotWindow((await chrome.tabs.get(addedTabId)).windowId);
     } catch {
-      // вкладка уже исчезла
+      // the tab is already gone
     }
   })
 );
