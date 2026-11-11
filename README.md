@@ -35,3 +35,7 @@ The extension's name and description follow Chrome's interface language: Russian
 - `background.js` — all of the logic.
 - `_locales/` — the name and description in English (default) and Russian.
 - `icons/` — the icons. `icon.svg` is the source for 48 and 128 px, `icon-16.svg` is a simplified source for 16 and 32 px.
+
+## License
+
+[MIT](LICENSE)
