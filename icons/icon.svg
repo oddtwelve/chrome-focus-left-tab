@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="#1a73e8"/>
+  <!-- левая вкладка: на неё переходит фокус -->
+  <path d="M16 54 V36 Q16 26 26 26 H52 Q62 26 62 36 V54 Z" fill="#fff"/>
+  <!-- правая вкладка: закрывается -->
+  <path d="M70 52 V36 Q70 28 78 28 H102 Q110 28 110 36 V52 Z" fill="none" stroke="#fff" stroke-width="4" stroke-opacity="0.55"/>
+  <path d="M84 34 L96 46 M96 34 L84 46" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-opacity="0.55"/>
+  <!-- стрелка влево -->
+  <path d="M100 88 H34" stroke="#fff" stroke-width="12" stroke-linecap="round"/>
+  <path d="M54 68 L34 88 L54 108" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
